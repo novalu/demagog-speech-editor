@@ -3,20 +3,28 @@ body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
-nav {
-  margin-bottom: 25px;
-}
-
 .bg-demagog {
   background-color: #ec653a;
 }
 
-.color-white {
-  color: #FFF
-}
-
 .display-none {
   display: none;
+}
+
+/****************************/
+
+nav {
+    margin-bottom: 25px;
+}
+
+nav a, nav a:link, nav a:visited {
+    color: #FFFFFF !important;
+}
+
+/**************************/
+
+.title-heading {
+    margin-bottom: 25px;
 }
 
 /***************************/

@@ -14,6 +14,7 @@ router.get('/:slug', function(req, res, next) {
           res.render('editor',
             {
               slug: req.params.slug,
+              title: body.article.title,
               transcript: body.article.source.transcript,
               statements: body.article.statements,
               data: data,

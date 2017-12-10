@@ -26,6 +26,7 @@ const getArticleBySlug = function (slug, callback) {
     `
       {
         article(slug: "${slug}") {
+          title
           source {
             transcript
           }

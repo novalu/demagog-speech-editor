@@ -1,13 +1,12 @@
 extends layout
 
 block content
-  header
-    nav.navbar.navbar-expand-lg.navbar-light.bg-demagog.color-white
-      .container
-        a.navbar-brand Editor projevy.demagog.cz
   .container#content
     if code == 0
       .alert.alert-success Projev uložen úspěšně
+    .row
+      .col-12
+        h2.title-heading= title
     .row
       .col-8#speech
         h3 Text projevu
