@@ -5,8 +5,9 @@ block content
     if code == 0
       .alert.alert-success Projev uložen úspěšně
     .row
-      .col-12
+      .col-12.heading
         h2.title-heading= title
+        a(href="/") Zpět na všechny projevy
     .row
       .col-8#speech
         h3 Text projevu
@@ -20,8 +21,8 @@ block content
       .col-4#control-panel
         h3 Nástroje
           #tools
-            button#save-statement-position(type="button").btn.btn-success Nastavit pozici výroku
-            button#remove-statement-position(type="button").btn.btn-danger Odebrat pozici výroku
+            button#save-statement-position(type="button").btn.btn-secondary Nastavit pozici výroku
+            button#remove-statement-position(type="button").btn.btn-secondary Odebrat pozici výroku
             form(action=`/editor/${slug}`, method="POST", id="submit")
               input(type="hidden", name="data", id="data", value=data)
               button#generate-json(type="button").btn.btn-primary Uložit text
