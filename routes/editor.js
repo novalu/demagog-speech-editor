@@ -10,20 +10,19 @@ router.get('/:slug', function(req, res, next) {
   provider.articleBySlug(req.params.slug, function(err, body) {
     if (!err) {
       storage.getSpeechData(req.params.slug, function(err, data) {
+        let renderData = {
+          slug: req.params.slug,
+          title: body.article.title,
+          transcript: body.article.source.transcript,
+          statements: body.article.statements,
+          code: req.query.code
+        };
         if (!err) {
-          res.render('editor',
-            {
-              slug: req.params.slug,
-              title: body.article.title,
-              transcript: body.article.source.transcript,
-              statements: body.article.statements,
-              data: data,
-              code: req.query.code
-            }
-          );
+          renderData.data = data;
         } else {
-          res.sendStatus(500)
+          console.log("There is no speech data for this slug, opening editor with no data")
         }
+        res.render('editor', renderData);
       });
     }
   });
