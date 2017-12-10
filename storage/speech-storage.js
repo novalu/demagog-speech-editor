@@ -26,6 +26,7 @@ function insertSpeechData(slug, data, callback) {
       callback(null, true)
     })
     .catch(function(err) {
+      console.error(err);
       callback(err)
     })
 }
@@ -36,6 +37,7 @@ function updateSpeechData(slug, data, callback) {
       callback(null, true)
     })
     .catch(function(err) {
+      console.error(err);
       callback(err)
     })
 }
