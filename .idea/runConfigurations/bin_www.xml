@@ -2,6 +2,7 @@
   <configuration default="false" name="bin/www" type="NodeJSConfigurationType" factoryName="Node.js" path-to-js-file="bin/www" working-dir="$PROJECT_DIR$">
     <envs>
       <env name="DEBUG" value="demagog-text:*" />
+      <env name="DATABASE_URL" value="postgres://novalu:CEcLDEiSCKn2zFimyufK74K9oLd7FcAQ9bhB6zWaCbPpHX4EcKwvQrCX@/demagog-speech-editor" />
     </envs>
     <EXTENSION ID="com.jetbrains.nodejs.run.NodeJSStartBrowserRunConfigurationExtension">
       <browser url="http://localhost:3000/" />
