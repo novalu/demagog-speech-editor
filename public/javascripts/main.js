@@ -170,6 +170,48 @@ function onDeselectText(event) {
   }
 }
 
+function initTextHandlers() {
+  let preSelection = $(".pre-selection");
+  let selection = $(".selection");
+  let postSelection = $(".post-selection");
+
+  preSelection.mousedown(onDeselectText);
+  selection.mousedown(onDeselectText);
+  postSelection.mousedown(onDeselectText);
+  preSelection.click(onDeselectText);
+  selection.click(onDeselectText);
+  postSelection.click(onDeselectText);
+  preSelection.mouseup(onTextMouseUp);
+  selection.mouseup(onTextMouseUp);
+  postSelection.mouseup(onTextMouseUp);
+}
+
+function serializeData() {
+  let data = [];
+  $(".statement").each(function(index, statement) {
+    const id = $(statement).attr("data-statement-id");
+    const savedStart = storage.getItem(`${id}-start`);
+    const savedEnd = storage.getItem(`${id}-end`);
+    if (savedStart !== null && savedEnd !== null) {
+      data.push({
+        "id": id,
+        "start": savedStart,
+        "end": savedEnd
+      })
+    }
+  });
+  let jsonToSend = JSON.stringify(data);
+  console.log(jsonToSend);
+  $("#data").attr("value", jsonToSend);
+  $("#submit").submit();
+}
+
+function initGenerateJsonButton() {
+  $("#generate-json").click(function() {
+    serializeData();
+  })
+}
+
 function onDocumentReady() {
   storage = sessionStorage;
   storage.removeItem("current-id");
@@ -178,18 +220,11 @@ function onDocumentReady() {
 
   $(".statement").mousedown(onStatementClick);
 
-  $(".pre-selection").mousedown(onDeselectText);
-  $(".selection").mousedown(onDeselectText);
-  $(".post-selection").mousedown(onDeselectText);
-  $(".pre-selection").click(onDeselectText);
-  $(".selection").click(onDeselectText);
-  $(".post-selection").click(onDeselectText);
-  $(".pre-selection").mouseup(onTextMouseUp);
-  $(".selection").mouseup(onTextMouseUp);
-  $(".post-selection").mouseup(onTextMouseUp);
+  initTextHandlers();
 
   initSaveStatementPositionButton();
   initRemoveStatementPositionButton();
+  initGenerateJsonButton();
 }
 
 $(document).ready(onDocumentReady);
