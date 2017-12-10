@@ -20,6 +20,9 @@ block content
           #tools
             button#save-statement-position(type="button").btn.btn-success Uložit pozici výroku
             button#remove-statement-position(type="button").btn.btn-danger Odebrat pozici výroku
+            form(action=`/editor/${slug}`, method="POST", id="submit")
+              input(type="hidden", name="data", id="data")
+              button#generate-json(type="button").btn.btn-primary Uložit text
         h3 Výroky
         #statements
           each statement in statements

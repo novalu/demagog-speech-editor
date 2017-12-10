@@ -1,26 +1,23 @@
 const express = require('express');
-const lodash = require('lodash');
 const router = express.Router();
 
 const provider = require('../provider/demagogProvider');
 
-function getStatementKeys(slug, statements) {
-  return lodash.map(statements, function(statement, index) {
-    statement.id = `${slug}-${index}`;
-    return statement
-  })
-}
-
 router.get('/:slug', function(req, res, next) {
   provider.articleBySlug(req.params.slug, function(err, body) {
-    const statements = getStatementKeys(req.params.slug, body.article.statements);
     res.render('editor',
       {
+        slug: req.params.slug,
         transcript: body.article.source.transcript,
-        statements: statements
+        statements: body.article.statements
       }
     );
   });
+});
+
+router.post('/:slug', function(req, res, next) {
+  console.log(req.body);
+  res.send();
 });
 
 module.exports = router;

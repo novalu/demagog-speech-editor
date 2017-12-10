@@ -84,4 +84,9 @@ body {
 
 #remove-statement-position {
   width: 100%;
+  margin-bottom: 10px;
+}
+
+#generate-json {
+  width: 100%;
 }
