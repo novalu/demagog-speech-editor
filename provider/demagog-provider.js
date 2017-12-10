@@ -8,7 +8,8 @@ const getArticlesList = function (callback) {
   client.query(`
       {
         articles {
-          id
+          slug
+          title
         }
       }`
   )
