@@ -30,14 +30,7 @@ const getArticleBySlug = function (slug, callback) {
             transcript
           }
           statements {
-            speaker {
-              id
-            }
-            assessment {
-              veracity {
-                key
-              }
-            }
+            id
             content
           }
         }
@@ -51,8 +44,6 @@ const getArticleBySlug = function (slug, callback) {
       callback(err, null);
     })
 };
-
-// TODO get statement by id
 
 exports.articlesList = getArticlesList;
 exports.articleBySlug = getArticleBySlug;
