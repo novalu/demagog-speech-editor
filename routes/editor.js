@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
+const lodash = require('lodash');
+
 const provider = require('../provider/demagog-provider');
 const storage = require('../storage/speech-storage');
 
@@ -14,11 +16,12 @@ router.get('/:slug', function(req, res, next) {
               slug: req.params.slug,
               transcript: body.article.source.transcript,
               statements: body.article.statements,
-              data: data
+              data: data,
+              code: req.query.code
             }
           );
         } else {
-
+          res.sendStatus(500)
         }
       });
     }
@@ -29,9 +32,7 @@ router.post('/:slug', function(req, res, next) {
   console.log(req.body.data);
   storage.upsertSpeechData(req.params.slug, req.body.data, function(err, response) {
     if (!err) {
-      console.log(response);
-      // TODO redirect to main page
-      res.send();
+      res.redirect(`/editor/${req.params.slug}?code=0`)
     } else {
       res.sendStatus(500);
     }

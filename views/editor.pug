@@ -1,13 +1,16 @@
 extends layout
 
 block content
+  header
+    nav.navbar.navbar-expand-lg.navbar-light.bg-demagog.color-white
+      .container
+        a.navbar-brand Editor projevy.demagog.cz
   .container#content
-    .row
-      .col-12#heading
-        h1 demagog-speech editor
+    if code == 0
+      .alert.alert-success Projev uložen úspěšně
     .row
       .col-8#speech
-        h3 Celý text
+        h3 Text projevu
         #speech-original(style={"display": "none"})
           =transcript
         #speech-container
@@ -23,7 +26,7 @@ block content
             form(action=`/editor/${slug}`, method="POST", id="submit")
               input(type="hidden", name="data", id="data", value=data)
               button#generate-json(type="button").btn.btn-primary Uložit text
-        h3 Výroky
+        h3 Výroky projevu
         #statements
           each statement in statements
             .statement(data-statement-id=statement.id)
