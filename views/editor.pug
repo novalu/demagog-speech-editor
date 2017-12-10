@@ -1,0 +1,27 @@
+extends layout
+
+block content
+  .container#content
+    .row
+      .col-12#heading
+        h1 demagog-speech editor
+    .row
+      .col-8#speech
+        h3 Celý text
+        #speech-original(style={"display": "none"})
+          =transcript
+        #speech-container
+          span.speech.pre-selection
+            =transcript
+          span.speech.selection
+          span.speech.post-selection
+      .col-4#control-panel
+        h3 Nástroje
+          #tools
+            button#save-statement-position(type="button").btn.btn-success Uložit pozici výroku
+            button#remove-statement-position(type="button").btn.btn-danger Odebrat pozici výroku
+        h3 Výroky
+        #statements
+          each statement in statements
+            .statement(data-statement-id=statement.id)
+              =statement.content
