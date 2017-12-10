@@ -1,5 +1,14 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  .container
+    .col-12
+      .row
+        h2 Seznam projevů
+    .col-12
+      .row
+        div
+          each article in articles
+            a(href=`/editor/${article.slug}`)= article.title
+            br
+

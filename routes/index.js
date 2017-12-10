@@ -1,9 +1,17 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 
-/* GET home page. */
+const provider = require("../provider/demagog-provider");
+
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+  provider.articlesList(function(err, data) {
+    console.log(data);
+    if (!err) {
+      res.render('index', { articles: data.articles });
+    } else {
+      res.sendStatus(500)
+    }
+  });
 });
 
 module.exports = router;
