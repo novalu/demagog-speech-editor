@@ -7,7 +7,9 @@ exports.getSpeechData = function(slug, callback) {
     .then(function(rows) {
       if (rows.length > 0) {
         let jsonString = rows[0].data;
+        console.log(jsonString);
         let json = JSON.parse(jsonString);
+        console.log(json);
         callback(null, json)
       } else {
         console.error("Cannot find speech with slug");
@@ -21,7 +23,7 @@ exports.getSpeechData = function(slug, callback) {
 };
 
 function insertSpeechData(slug, data, callback) {
-  db('speechs').insert({slug: slug, data: JSON.stringify(data)})
+  db('speechs').insert({slug: slug, data: data})
     .then(function(res) {
       callback(null, true)
     })
@@ -32,7 +34,7 @@ function insertSpeechData(slug, data, callback) {
 }
 
 function updateSpeechData(slug, data, callback) {
-  db('speechs').update({data: JSON.stringify(data)}).where({slug: slug})
+  db('speechs').update({data: data}).where({slug: slug})
     .then(function(res) {
       callback(null, true)
     })
