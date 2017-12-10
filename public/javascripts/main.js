@@ -41,10 +41,10 @@ function onStatementClick() {
   const existSave = savedStart !== null && savedEnd !== null;
   setRemoveButtonState(existSave);
 
-  reloadStatementSelection();
+  reloadStatements();
 }
 
-function reloadStatementSelection() {
+function reloadStatements() {
   $(".statement").each(function(index, statement) {
 
     const id = $(statement).attr("data-statement-id");
@@ -114,7 +114,7 @@ function onSaveStatementPositionClick(event) {
   storage.setItem(`${currentId}-start`, startPositionInOriginal.toString());
   storage.setItem(`${currentId}-end`, endPositionInOriginal.toString());
 
-  reloadStatementSelection();
+  reloadStatements();
 }
 
 function onRemoveStatementPositionClick(event) {
@@ -126,7 +126,7 @@ function onRemoveStatementPositionClick(event) {
 
   setRemoveButtonState(false);
 
-  reloadStatementSelection();
+  reloadStatements();
 }
 
 function initSaveStatementPositionButton() {
@@ -175,6 +175,8 @@ function initTextHandlers() {
   let selection = $(".selection");
   let postSelection = $(".post-selection");
 
+  $("#content").mousedown(onDeselectText);
+
   preSelection.mousedown(onDeselectText);
   selection.mousedown(onDeselectText);
   postSelection.mousedown(onDeselectText);
@@ -212,11 +214,21 @@ function initGenerateJsonButton() {
   })
 }
 
+function restoreStatements() {
+  const serializedJson = $("#data").attr("value");
+  const json = JSON.parse(serializedJson);
+  _.forEach(json, function (statement) {
+    storage.setItem(`${statement.id}-start`, statement.start);
+    storage.setItem(`${statement.id}-end`, statement.end);
+  });
+  reloadStatements();
+}
+
 function onDocumentReady() {
   storage = sessionStorage;
-  storage.removeItem("current-id");
+  storage.clear();
 
-  reloadStatementSelection();
+  reloadStatements();
 
   $(".statement").mousedown(onStatementClick);
 
@@ -225,6 +237,8 @@ function onDocumentReady() {
   initSaveStatementPositionButton();
   initRemoveStatementPositionButton();
   initGenerateJsonButton();
+
+  restoreStatements();
 }
 
 $(document).ready(onDocumentReady);

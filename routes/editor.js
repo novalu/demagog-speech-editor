@@ -6,13 +6,22 @@ const storage = require('../storage/speech-storage');
 
 router.get('/:slug', function(req, res, next) {
   provider.articleBySlug(req.params.slug, function(err, body) {
-    res.render('editor',
-      {
-        slug: req.params.slug,
-        transcript: body.article.source.transcript,
-        statements: body.article.statements
-      }
-    );
+    if (!err) {
+      storage.getSpeechData(req.params.slug, function(err, data) {
+        if (!err) {
+          res.render('editor',
+            {
+              slug: req.params.slug,
+              transcript: body.article.source.transcript,
+              statements: body.article.statements,
+              data: data
+            }
+          );
+        } else {
+
+        }
+      });
+    }
   });
 });
 
