@@ -120,11 +120,14 @@ function onSaveStatementPositionClick(event) {
   let rnOccurrencesToEnd = (originalText.substr(0, endPositionInOriginal).match(new RegExp("\n|\r", "g")) || []).length;
   let end2 = endPositionInOriginal + rnOccurrencesToEnd;
 
+  let fragment = originalText.substr(startPositionInOriginal, (endPositionInOriginal - startPositionInOriginal));
+
   const currentId = storage.getItem("current-id");
   storage.setItem(`${currentId}-start`, startPositionInOriginal.toString());
   storage.setItem(`${currentId}-end`, endPositionInOriginal.toString());
   storage.setItem(`${currentId}-start2`, start2.toString());
   storage.setItem(`${currentId}-end2`, end2.toString());
+  storage.setItem(`${currentId}-fragment`, fragment);
 
   setRemoveButtonState(true);
 
@@ -215,13 +218,15 @@ function serializeData() {
     const savedEnd = storage.getItem(`${id}-end`);
     const savedStart2 = storage.getItem(`${id}-start2`);
     const savedEnd2 = storage.getItem(`${id}-end2`);
-    if (savedStart !== null && savedEnd !== null && savedStart2 !== null && savedEnd2 !== null) {
+    const savedFragment = storage.getItem(`${id}-fragment`);
+    if (savedStart !== null && savedEnd !== null && savedStart2 !== null && savedEnd2 !== null && savedFragment !== null) {
       data.push({
         "id": id,
         "start": savedStart,
         "end": savedEnd,
         "start2": savedStart2,
-        "end2": savedEnd2
+        "end2": savedEnd2,
+        "fragment": savedFragment
       })
     }
   });
