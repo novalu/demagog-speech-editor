@@ -22,10 +22,10 @@ block content
         h3 Nástroje
           #tools
             button#save-statement-position(type="button").btn.btn-secondary Nastavit pozici výroku
-            button#remove-statement-position(type="button").btn.btn-secondary Odebrat pozici výroku
+            button#remove-statement-position(type="button").btn.btn-secondary Smazat pozici výroku
             form(action=`/editor/${slug}`, method="POST", id="submit")
               input(type="hidden", name="data", id="data", value=data)
-              button#generate-json(type="button").btn.btn-primary Uložit text
+              button#generate-json(type="button").btn.btn-primary Publikovat text s pozicemi
         h3 Výroky projevu
         #statements
           each statement in statements
