@@ -30,16 +30,20 @@ function setRemoveButtonState(state) {
   }
 }
 
+function existSavedPosition(id) {
+  const savedStart = storage.getItem(`${id}-start`);
+  const savedEnd = storage.getItem(`${id}-end`);
+  return savedStart !== null && savedEnd !== null;
+}
+
 function onStatementClick() {
   const id = $(this).attr("data-statement-id");
   storage.setItem("current-id", id);
 
   setSaveButtonState(false);
 
-  const savedStart = storage.getItem(`${id}-start`);
-  const savedEnd = storage.getItem(`${id}-end`);
-  const existSave = savedStart !== null && savedEnd !== null;
-  setRemoveButtonState(existSave);
+  const exist = existSavedPosition(id);
+  setRemoveButtonState(exist);
 
   reloadStatements();
 }
@@ -110,9 +114,19 @@ function onSaveStatementPositionClick(event) {
   }
   let endPositionInOriginal = startPositionInOriginal + (end - start);
 
+  let originalText = $("#speech-original").text().toString();
+  let rnOccurrencesToStart = (originalText.substr(0, startPositionInOriginal).match(new RegExp("\n|\r", "g")) || []).length;
+  let start2 = startPositionInOriginal + rnOccurrencesToStart;
+  let rnOccurrencesToEnd = (originalText.substr(0, endPositionInOriginal).match(new RegExp("\n|\r", "g")) || []).length;
+  let end2 = endPositionInOriginal + rnOccurrencesToEnd;
+
   const currentId = storage.getItem("current-id");
   storage.setItem(`${currentId}-start`, startPositionInOriginal.toString());
   storage.setItem(`${currentId}-end`, endPositionInOriginal.toString());
+  storage.setItem(`${currentId}-start2`, start2.toString());
+  storage.setItem(`${currentId}-end2`, end2.toString());
+
+  setRemoveButtonState(true);
 
   reloadStatements();
 }
@@ -149,43 +163,48 @@ function isTextSelected() {
     const isPreSelection = classes.contains("pre-selection");
     const isSelection = classes.contains("selection");
     const isPostSelection = classes.contains("post-selection");
-    return isPreSelection || isSelection || isPostSelection;
+    const selectedCount = firstRange.endOffset - firstRange.startOffset;
+    return selectedCount > 0 && (isPreSelection || isSelection || isPostSelection);
   }
   return false;
 }
 
-function onTextMouseUp(event) {
-  console.log("yyyyy");
+function checkSaveButtonState(event) {
   const currentId = storage.getItem("current-id");
   const isStatementSelected = currentId !== null;
 
-  const isSelected = isTextSelected();
+  const isTextSelectedVar = isTextSelected();
 
-  setSaveButtonState(isStatementSelected && isSelected);
-}
+  const existSavedPositionVar = existSavedPosition(currentId);
 
-function onDeselectText(event) {
-  if (!isTextSelected()) {
-    setSaveButtonState(false);
-  }
+  setSaveButtonState(isStatementSelected && isTextSelectedVar && !existSavedPositionVar);
 }
 
 function initTextHandlers() {
   let preSelection = $(".pre-selection");
   let selection = $(".selection");
   let postSelection = $(".post-selection");
+  let content = $("#content");
+  let body = $("body");
 
-  $("#content").mousedown(onDeselectText);
+  body.click(checkSaveButtonState);
 
-  preSelection.mousedown(onDeselectText);
-  selection.mousedown(onDeselectText);
-  postSelection.mousedown(onDeselectText);
-  preSelection.click(onDeselectText);
-  selection.click(onDeselectText);
-  postSelection.click(onDeselectText);
-  preSelection.mouseup(onTextMouseUp);
-  selection.mouseup(onTextMouseUp);
-  postSelection.mouseup(onTextMouseUp);
+  content.mousemove(checkSaveButtonState);
+  content.mousedown(checkSaveButtonState);
+  content.click(checkSaveButtonState);
+  content.mouseup(checkSaveButtonState);
+
+  preSelection.mousedown(checkSaveButtonState);
+  preSelection.click(checkSaveButtonState);
+  preSelection.mouseup(checkSaveButtonState);
+
+  selection.mousedown(checkSaveButtonState);
+  selection.click(checkSaveButtonState);
+  selection.mouseup(checkSaveButtonState);
+
+  postSelection.mousedown(checkSaveButtonState);
+  postSelection.click(checkSaveButtonState);
+  postSelection.mouseup(checkSaveButtonState);
 }
 
 function serializeData() {
@@ -194,11 +213,15 @@ function serializeData() {
     const id = $(statement).attr("data-statement-id");
     const savedStart = storage.getItem(`${id}-start`);
     const savedEnd = storage.getItem(`${id}-end`);
-    if (savedStart !== null && savedEnd !== null) {
+    const savedStart2 = storage.getItem(`${id}-start2`);
+    const savedEnd2 = storage.getItem(`${id}-end2`);
+    if (savedStart !== null && savedEnd !== null && savedStart2 !== null && savedEnd2 !== null) {
       data.push({
         "id": id,
         "start": savedStart,
-        "end": savedEnd
+        "end": savedEnd,
+        "start2": savedStart2,
+        "end2": savedEnd2
       })
     }
   });
@@ -216,29 +239,31 @@ function initGenerateJsonButton() {
 
 function restoreStatements() {
   const serializedJson = $("#data").attr("value");
-  const json = JSON.parse(serializedJson);
-  _.forEach(json, function (statement) {
-    storage.setItem(`${statement.id}-start`, statement.start);
-    storage.setItem(`${statement.id}-end`, statement.end);
-  });
+  if (serializedJson) {
+    const json = JSON.parse(serializedJson);
+    _.forEach(json, function (statement) {
+      storage.setItem(`${statement.id}-start`, statement.start);
+      storage.setItem(`${statement.id}-end`, statement.end);
+    });
+  }
   reloadStatements();
+}
+
+function initHandlers() {
+  $(".statement").mousedown(onStatementClick);
+  initTextHandlers();
+  initSaveStatementPositionButton();
+  initRemoveStatementPositionButton();
+  initGenerateJsonButton();
 }
 
 function onDocumentReady() {
   storage = sessionStorage;
   storage.clear();
 
-  reloadStatements();
-
-  $(".statement").mousedown(onStatementClick);
-
-  initTextHandlers();
-
-  initSaveStatementPositionButton();
-  initRemoveStatementPositionButton();
-  initGenerateJsonButton();
-
   restoreStatements();
+
+  initHandlers();
 }
 
 $(document).ready(onDocumentReady);

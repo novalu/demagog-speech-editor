@@ -10,10 +10,14 @@ router.get('/:slug', function(req, res, next) {
   provider.articleBySlug(req.params.slug, function(err, body) {
     if (!err) {
       storage.getSpeechData(req.params.slug, function(err, data) {
+        let text = body.article.source.transcript;
+        //text = "Lorem\r\nIpsum\r\nDolor\r\nSit\r\nAmet";
+        //text = text.replace(new RegExp("[\n\r]", "g"), '|');
+        console.log(text);
         let renderData = {
           slug: req.params.slug,
           title: body.article.title,
-          transcript: body.article.source.transcript,
+          transcript: text,
           statements: body.article.statements,
           code: req.query.code
         };
