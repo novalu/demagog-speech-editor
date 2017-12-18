@@ -1,4 +1,4 @@
-let storage;
+let storage = {};
 
 function setSaveButtonState(state) {
   const button = $("#save-statement-position");
@@ -31,14 +31,14 @@ function setRemoveButtonState(state) {
 }
 
 function existSavedPosition(id) {
-  const savedStart = storage.getItem(`${id}-start`);
-  const savedEnd = storage.getItem(`${id}-end`);
-  return savedStart !== null && savedEnd !== null;
+  const savedStart = _.get(storage, `s${id}.start`);
+  const savedEnd = _.get(storage, `s${id}.end`);
+  return savedStart !== undefined && savedEnd !== undefined;
 }
 
 function onStatementClick() {
   const id = $(this).attr("data-statement-id");
-  storage.setItem("current-id", id);
+  _.set(storage, "current-id", id);
 
   setSaveButtonState(false);
 
@@ -52,9 +52,9 @@ function reloadStatements() {
   $(".statement").each(function(index, statement) {
 
     const id = $(statement).attr("data-statement-id");
-    const savedStart = storage.getItem(`${id}-start`);
-    const savedEnd = storage.getItem(`${id}-end`);
-    const saveExist = savedStart !== null && savedEnd !== null;
+    const savedStart = _.get(storage, `s${id}.start`);
+    const savedEnd = _.get(storage, `s${id}.end`);
+    const saveExist = savedStart !== undefined && savedEnd !== undefined;
 
     if (saveExist) {
       $(statement).addClass("statement-saved");
@@ -62,7 +62,7 @@ function reloadStatements() {
       $(statement).removeClass("statement-saved");
     }
 
-    if (storage.getItem("current-id") === id) {
+    if (_.get(storage, "current-id") === id) {
       $(statement).addClass("statement-selected");
 
       const originalText = $("#speech-original").text();
@@ -122,12 +122,12 @@ function onSaveStatementPositionClick(event) {
 
   let fragment = originalText.substr(startPositionInOriginal, (endPositionInOriginal - startPositionInOriginal));
 
-  const currentId = storage.getItem("current-id");
-  storage.setItem(`${currentId}-start`, startPositionInOriginal.toString());
-  storage.setItem(`${currentId}-end`, endPositionInOriginal.toString());
-  storage.setItem(`${currentId}-start2`, start2.toString());
-  storage.setItem(`${currentId}-end2`, end2.toString());
-  storage.setItem(`${currentId}-fragment`, fragment);
+  const currentId = _.get(storage, "current-id");
+  _.set(storage, `s${currentId}.start`, startPositionInOriginal.toString());
+  _.set(storage, `s${currentId}.end`, endPositionInOriginal.toString());
+  _.set(storage, `s${currentId}.start2`, start2.toString());
+  _.set(storage, `s${currentId}.end2`, end2.toString());
+  _.set(storage, `s${currentId}.fragment`, fragment);
 
   setRemoveButtonState(true);
 
@@ -137,9 +137,9 @@ function onSaveStatementPositionClick(event) {
 function onRemoveStatementPositionClick(event) {
   event.preventDefault();
 
-  const currentId = storage.getItem("current-id");
-  storage.removeItem(`${currentId}-start`);
-  storage.removeItem(`${currentId}-end`);
+  const currentId = _.get(storage, "current-id");
+  _.unset(storage, `s${currentId}.start`);
+  _.unset(storage, `s${currentId}.end`);
 
   setRemoveButtonState(false);
 
@@ -173,8 +173,8 @@ function isTextSelected() {
 }
 
 function checkSaveButtonState(event) {
-  const currentId = storage.getItem("current-id");
-  const isStatementSelected = currentId !== null;
+  const currentId = _.get(storage, "current-id");
+  const isStatementSelected = currentId !== undefined;
 
   const isTextSelectedVar = isTextSelected();
 
@@ -214,12 +214,12 @@ function serializeData() {
   let data = [];
   $(".statement").each(function(index, statement) {
     const id = $(statement).attr("data-statement-id");
-    const savedStart = storage.getItem(`${id}-start`);
-    const savedEnd = storage.getItem(`${id}-end`);
-    const savedStart2 = storage.getItem(`${id}-start2`);
-    const savedEnd2 = storage.getItem(`${id}-end2`);
-    const savedFragment = storage.getItem(`${id}-fragment`);
-    if (savedStart !== null && savedEnd !== null && savedStart2 !== null && savedEnd2 !== null && savedFragment !== null) {
+    const savedStart = _.get(storage, `s${id}.start`);
+    const savedEnd = _.get(storage, `s${id}.end`);
+    const savedStart2 = _.get(storage, `s${id}.start2`);
+    const savedEnd2 = _.get(storage, `s${id}.end2`);
+    const savedFragment = _.get(storage, `s${id}.fragment`);
+    if (savedStart !== undefined && savedEnd !== undefined && savedStart2 !== undefined && savedEnd2 !== undefined && savedFragment !== undefined) {
       data.push({
         "id": id,
         "start": savedStart,
@@ -231,7 +231,6 @@ function serializeData() {
     }
   });
   let jsonToSend = JSON.stringify(data);
-  console.log(jsonToSend);
   $("#data").attr("value", jsonToSend);
   $("#submit").submit();
 }
@@ -247,10 +246,14 @@ function restoreStatements() {
   if (serializedJson) {
     const json = JSON.parse(serializedJson);
     _.forEach(json, function (statement) {
-      storage.setItem(`${statement.id}-start`, statement.start);
-      storage.setItem(`${statement.id}-end`, statement.end);
+      _.set(storage, `s${statement.id}.start`, statement.start);
+      _.set(storage, `s${statement.id}.end`, statement.end);
+      _.set(storage, `s${statement.id}.start2`, statement.start2);
+      _.set(storage, `s${statement.id}.end2`, statement.end2);
+      _.set(storage, `s${statement.id}.fragment`, statement.fragment);
     });
   }
+  console.log("boom");
   reloadStatements();
 }
 
@@ -263,11 +266,8 @@ function initHandlers() {
 }
 
 function onDocumentReady() {
-  storage = sessionStorage;
-  storage.clear();
-
+  storage = {};
   restoreStatements();
-
   initHandlers();
 }
 
