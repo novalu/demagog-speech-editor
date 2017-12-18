@@ -58,3 +58,14 @@ exports.upsertSpeechData = function(slug, data, callback) {
       callback(err)
     })
 };
+
+exports.deleteSpeechData = function(slug, data, callback) {
+  db('speechs').del().where("slug", slug)
+    .then(function(res) {
+      callback(null, true)
+    })
+    .catch(function(err) {
+      console.error(err);
+      callback(err);
+    })
+};

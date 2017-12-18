@@ -32,11 +32,22 @@ router.get('/:slug', function(req, res, next) {
   });
 });
 
-router.post('/:slug', function(req, res, next) {
+router.post('/save/:slug', function(req, res, next) {
   console.log(req.body.data);
   storage.upsertSpeechData(req.params.slug, req.body.data, function(err, response) {
     if (!err) {
-      res.redirect(`/editor/${req.params.slug}?code=0`)
+      res.redirect(`/editor/${req.params.slug}?code=s0`)
+    } else {
+      res.sendStatus(500);
+    }
+  });
+});
+
+router.post('/delete/:slug', function(req, res, next) {
+  console.log(req.body.data);
+  storage.deleteSpeechData(req.params.slug, req.body.data, function(err, response) {
+    if (!err) {
+      res.redirect(`/editor/${req.params.slug}?code=d0`)
     } else {
       res.sendStatus(500);
     }
