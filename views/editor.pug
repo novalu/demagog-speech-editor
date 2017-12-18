@@ -2,8 +2,10 @@ extends layout
 
 block content
   .container#content
-    if code == 0
+    if code == "s0"
       .alert.alert-success Projev uložen úspěšně
+    else if code == "d0"
+      .alert.alert-success Projev smazán úspěšně
     .row
       .col-12.heading
         h2.title-heading= title
@@ -20,12 +22,16 @@ block content
           span.speech.post-selection
       .col-4#control-panel
         h3 Nástroje
-          #tools
+          .tools
             button#save-statement-position(type="button").btn.btn-secondary Nastavit pozici výroku
-            button#remove-statement-position(type="button").btn.btn-secondary Smazat pozici výroku
-            form(action=`/editor/${slug}`, method="POST", id="submit")
+            button#remove-statement-position(type="button").btn.btn-secondary Odebrat pozici výroku
+          .tools
+            form(action=`/editor/save/${slug}`, method="POST", id="submit")
               input(type="hidden", name="data", id="data", value=data)
-              button#generate-json(type="button").btn.btn-primary Publikovat text s pozicemi
+              button#generate-json(type="button").btn.btn-secondary.btn-sm Publikovat přiřazené pozice
+            form(action=`/editor/delete/${slug}`, method="POST", id="delete")
+              input(type="hidden", name="data")
+              button#clear-json(type="submit").btn.btn-secondary.btn-sm Smazat přiřazené pozice
         h3 Výroky projevu
         #statements
           each statement in statements
