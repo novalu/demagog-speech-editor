@@ -253,7 +253,6 @@ function restoreStatements() {
       _.set(storage, "s" + statement.id + ".fragment", statement.fragment);
     });
   }
-  console.log("boom");
   reloadStatements();
 }
 

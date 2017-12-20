@@ -3,6 +3,9 @@
     <envs>
       <env name="DEBUG" value="demagog-text:*" />
       <env name="DATABASE_URL" value="postgres://novalu:CEcLDEiSCKn2zFimyufK74K9oLd7FcAQ9bhB6zWaCbPpHX4EcKwvQrCX@/demagog-speech-editor" />
+      <env name="ENVIRONMENT" value="development" />
+      <env name="EDITOR_USERNAME" value="admin" />
+      <env name="EDITOR_PASSWORD" value="admin" />
     </envs>
     <EXTENSION ID="com.jetbrains.nodejs.run.NodeJSStartBrowserRunConfigurationExtension">
       <browser name="a7bb68e0-33c0-4d6f-a81a-aac1fdb870c8" url="http://localhost:3000/" />

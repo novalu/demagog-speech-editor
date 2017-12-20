@@ -3,7 +3,7 @@ const router = express.Router();
 
 const cors = require('cors');
 
-const storage = require('../storage/speech-storage');
+const storage = require('../../storage/speech-storage');
 
 router.get('/:slug', cors(), function(req, res, next) {
   storage.getSpeechData(req.params.slug, function(err, data) {
